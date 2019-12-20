@@ -9,10 +9,10 @@ import java.util.List;
 public class UserJdbcDAO {
 
     private Connection connection;
+
     public UserJdbcDAO(Connection connection) {
         this.connection = connection;
     }
-
 
     public List<User> getAllUsersDAO() {
         try {

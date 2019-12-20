@@ -1,8 +1,11 @@
 package service;
 
+import DAO.UserHibernateDAO;
 import DAO.UserJdbcDAO;
+import connections.ConnectionHibernate;
 import connections.ConnectionJDBC;
 import model.User;
+import org.hibernate.SessionFactory;
 
 import java.util.List;
 
@@ -10,21 +13,25 @@ public class UserService {
 
     private static UserService instance;
 
-    private UserService(){}
+    private SessionFactory sessionFactory;
+
+    private UserService(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     public static UserService getInstance() {
         if (instance == null) {
-            instance = new UserService();
+            instance = new UserService(ConnectionHibernate.getSessionFactory());
         }
         return instance;
     }
 
     public List<User> getAllUsers(){
-        return getUserDAO().getAllUsersDAO();
+        return new UserHibernateDAO(sessionFactory.openSession()).getAllUsersDAO();
     }
 
     public boolean addUser(User user) {
-        return getUserDAO().addUserDAO(user);
+        return new UserHibernateDAO(sessionFactory.openSession()).addUserDAO(user);
     }
 
     public UserJdbcDAO getUserDAO() {
@@ -32,7 +39,7 @@ public class UserService {
     }
 
     public boolean deleteUser(Long id) {
-        return getUserDAO().deleteUserDAO(id);
+        return new UserHibernateDAO(sessionFactory.openSession()).deleteUserDAO(id);
     }
 
     public boolean updateUser(User user) {
