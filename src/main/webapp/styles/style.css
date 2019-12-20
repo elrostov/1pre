@@ -1,0 +1,38 @@
+table {
+    font: 95% Arial, Helvetica, sans-serif;
+    max-width: 800px;
+    margin: 10px auto;
+    background: #F7F7F7;
+    font-size: 14px;
+    border-spacing: 0;
+    text-align: center;
+}
+form {
+    margin-top: 0;
+    margin-block-end: 0;
+}
+th {
+    background: #7eafeb;
+    padding: 20px 0;
+    font-size: 140%;
+    font-weight: 300;
+    text-align: center;
+    color: #fff;
+    margin: -16px -16px 16px -16px;
+    min-width: 150px;
+}
+th, td {
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    border-color: white;
+    width: max-content;
+
+}
+th:last-child {
+    border-right: none;
+}
+td {
+    padding: 10px 20px;
+    background: #f7f7f7;
+}
+
