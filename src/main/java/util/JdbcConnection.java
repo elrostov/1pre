@@ -1,4 +1,4 @@
-package connections;
+package util;
 
 import DAO.UserJdbcDAO;
 
@@ -40,7 +40,5 @@ public class JdbcConnection {
         }
     }
 
-    public static UserJdbcDAO getUserJdbcDAO() {
-        return new UserJdbcDAO(JdbcConnection.getInstance().getConnection());
-    }
+
 }

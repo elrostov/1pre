@@ -1,11 +1,10 @@
 package service;
 
 import DAO.UserHibernateDAO;
-import DAO.UserJdbcDAO;
-import connections.HibernateConnection;
-import connections.JdbcConnection;
+import util.HibernateConnection;
 import model.User;
 import org.hibernate.SessionFactory;
+import util.UserDaoFactory;
 
 import java.util.List;
 
@@ -13,36 +12,30 @@ public class UserService {
 
     private static UserService instance;
 
-    private SessionFactory sessionFactory;
-
-    private UserService(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
     public static UserService getInstance() {
         if (instance == null) {
-            instance = new UserService(HibernateConnection.getSessionFactory());
+            instance = new UserService();
         }
         return instance;
     }
 
     public List<User> getAllUsers(){
 //        return JdbcConnection.getUserJdbcDAO().getAllUsersDAO();
-        return new UserHibernateDAO(sessionFactory.openSession()).getAllUsersDAO();
+        return UserDaoFactory.getInstance().getConnection().getAllUsersDAO();
     }
 
     public boolean addUser(User user) {
 //        return JdbcConnection.getUserJdbcDAO().addUserDAO(user);
-        return new UserHibernateDAO(sessionFactory.openSession()).addUserDAO(user);
+        return UserDaoFactory.getInstance().getConnection().addUserDAO(user);
     }
 
     public boolean deleteUser(User user) {
 //        return JdbcConnection.getUserJdbcDAO().deleteUserDAO(id);
-        return new UserHibernateDAO(sessionFactory.openSession()).deleteUserDAO(user);
+        return UserDaoFactory.getInstance().getConnection().deleteUserDAO(user);
     }
 
     public boolean updateUser(User user) {
 //        return JdbcConnection.getUserJdbcDAO().updateUserDAO(user);
-        return new UserHibernateDAO(sessionFactory.openSession()).updateUserDAO(user);
+        return UserDaoFactory.getInstance().getConnection().updateUserDAO(user);
     }
 }

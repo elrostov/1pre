@@ -1,4 +1,4 @@
-package connections;
+package util;
 
 import model.User;
 import org.hibernate.SessionFactory;

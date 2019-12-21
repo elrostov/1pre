@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserJdbcDAO {
+public class UserJdbcDAO implements UserDAO {
 
     private Connection connection;
 
@@ -14,6 +14,7 @@ public class UserJdbcDAO {
         this.connection = connection;
     }
 
+    @Override
     public List<User> getAllUsersDAO() {
         try {
             List<User> userList = new ArrayList<>();
@@ -41,6 +42,7 @@ public class UserJdbcDAO {
         }
     }
 
+    @Override
     public boolean addUserDAO (User user) {
         try {
             connection.setAutoCommit(false);
@@ -65,12 +67,13 @@ public class UserJdbcDAO {
         }
     }
 
-    public boolean deleteUserDAO (Long id) {
+    @Override
+    public boolean deleteUserDAO(User user) {
         try {
             connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement
                     ("delete from users where id=?")) {
-                preparedStatement.setLong(1, id);
+                preparedStatement.setLong(1, user.getId());
                 int r = preparedStatement.executeUpdate();
                 connection.commit();
                 connection.close();
@@ -88,6 +91,7 @@ public class UserJdbcDAO {
         }
     }
 
+    @Override
     public boolean updateUserDAO(User user) {
         try {
             connection.setAutoCommit(false);
