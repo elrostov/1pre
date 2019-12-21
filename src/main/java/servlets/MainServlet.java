@@ -22,5 +22,6 @@ public class MainServlet extends HttpServlet {
         }
         req.setAttribute("users", users);
         req.getRequestDispatcher("WEB-INF/index.jsp").forward(req, resp);
+        resp.setStatus(HttpServletResponse.SC_OK);
     }
 }

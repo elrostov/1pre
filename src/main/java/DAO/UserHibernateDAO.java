@@ -45,10 +45,10 @@ public class UserHibernateDAO implements UserDAO {
     }
 
     @Override
-    public boolean deleteUserDAO(Long id) {
+    public boolean deleteUserDAO(User user) {
         Transaction t = session.beginTransaction();
         try {
-            session.delete(new User(id));
+            session.delete(user);
             t.commit();
             session.close();
             return true;
@@ -61,16 +61,16 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public boolean updateUserDAO(User user) {
-        return false;
-    }
-
-    @Override
-    public boolean updateUserPasswordDAO(User user) {
-        return false;
-    }
-
-    @Override
-    public boolean updateUserNameDAO(User user) {
-        return false;
+        Transaction t = session.beginTransaction();
+        try {
+            session.update(user);
+            t.commit();
+            session.close();
+            return true;
+        } catch (HibernateException e) {
+            t.rollback();
+            session.close();
+            return false;
+        }
     }
 }

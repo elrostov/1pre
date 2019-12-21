@@ -17,7 +17,7 @@ public class DeleteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.parseLong(req.getParameter("id"));
         List<User> users = null;
-        if (UserService.getInstance().deleteUser(id)) {
+        if (UserService.getInstance().deleteUser(new User(id))) {
             users = UserService.getInstance().getAllUsers();
             if (users == null) {
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

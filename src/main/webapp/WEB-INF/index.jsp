@@ -26,9 +26,11 @@
             <td>${user.getName()}</td>
             <td>${user.getPassword()}</td>
             <td>
-                <form action="/update" method="GET">
+                <form action="/update" method="POST">
                     <input type="hidden" value="${user.getId()}" name="id"/>
                     <input type="hidden" value="${user.getName()}" name="name"/>
+                    <input type="hidden" value="${user.getPassword()}" name="password"/>
+                    <input type="hidden" value="yes" name="updatePage"/>
                     <input type="submit" value="Update">
                 </form>
             </td>

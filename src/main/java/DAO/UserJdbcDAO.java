@@ -41,7 +41,6 @@ public class UserJdbcDAO {
         }
     }
 
-
     public boolean addUserDAO (User user) {
         try {
             connection.setAutoCommit(false);
@@ -66,7 +65,6 @@ public class UserJdbcDAO {
         }
     }
 
-
     public boolean deleteUserDAO (Long id) {
         try {
             connection.setAutoCommit(false);
@@ -90,7 +88,6 @@ public class UserJdbcDAO {
         }
     }
 
-
     public boolean updateUserDAO(User user) {
         try {
             connection.setAutoCommit(false);
@@ -99,58 +96,6 @@ public class UserJdbcDAO {
                 preparedStatement.setString(1, user.getName());
                 preparedStatement.setString(2, user.getPassword());
                 preparedStatement.setLong(3, user.getId());
-                int r = preparedStatement.executeUpdate();
-                connection.commit();
-                connection.close();
-                return r > 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                connection.close();
-            } catch (SQLException ex) {
-                ex.addSuppressed(e);
-                ex.printStackTrace();
-            }
-            return false;
-        }
-    }
-
-
-    public boolean updateUserPasswordDAO(User user) {
-        try {
-            connection.setAutoCommit(false);
-            try (PreparedStatement preparedStatement = connection.prepareStatement
-                    ("update users set password = ? where id=?")) {  // Почему-то при изменении пароля у юзера
-                // обнуляется имя. Вариант со Statement такой же. Драйвера менял на 5.1.47.
-                preparedStatement.setString(1, user.getPassword());
-                preparedStatement.setLong(2, user.getId());
-                int r = preparedStatement.executeUpdate();
-                connection.commit();
-                connection.close();
-                return r > 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                connection.close();
-            } catch (SQLException ex) {
-                ex.addSuppressed(e);
-                ex.printStackTrace();
-            }
-            return false;
-        }
-    }
-
-
-    public boolean updateUserNameDAO(User user) {
-        try {
-            connection.setAutoCommit(false);
-            try (PreparedStatement preparedStatement = connection.prepareStatement
-                    ("update users set name = ? where id=?")) { // Почему-то при изменении имени у юзера обнуляется
-                // пароль. Вариант со Statement такой же. Драйвера менял на 5.1.47.
-                preparedStatement.setString(1, user.getName());
-                preparedStatement.setLong(2, user.getId());
                 int r = preparedStatement.executeUpdate();
                 connection.commit();
                 connection.close();

@@ -1,19 +1,21 @@
 package connections;
 
+import DAO.UserJdbcDAO;
+
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionJDBC {
+public class JdbcConnection {
 
-    private static ConnectionJDBC instance;
+    private static JdbcConnection instance;
 
-    private ConnectionJDBC(){}
+    private JdbcConnection(){}
 
-    public static ConnectionJDBC getInstance() {
+    public static JdbcConnection getInstance() {
         if (instance == null) {
-            instance = new ConnectionJDBC();
+            instance = new JdbcConnection();
         }
         return instance;
     }
@@ -36,5 +38,9 @@ public class ConnectionJDBC {
             e.printStackTrace();
             throw new IllegalStateException();
         }
+    }
+
+    public static UserJdbcDAO getUserJdbcDAO() {
+        return new UserJdbcDAO(JdbcConnection.getInstance().getConnection());
     }
 }
