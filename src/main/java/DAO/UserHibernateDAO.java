@@ -4,15 +4,16 @@ import model.User;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import util.DBHelper;
 
 import java.util.List;
 
 public class UserHibernateDAO implements UserDAO {
 
-    private Session session;
+    private Session session; //Где открывать сессии? В конструкторе или в методах?
 
-    public UserHibernateDAO(Session openSession) {
-        this.session = openSession;
+    public UserHibernateDAO() {
+        this.session = DBHelper.getSessionFactory().openSession();
     }
 
     @Override
@@ -21,7 +22,7 @@ public class UserHibernateDAO implements UserDAO {
             List<User> userList = (List<User>) session.createQuery("FROM User").list();
             session.close();
             return userList;
-        } catch (HibernateException e) {
+        } catch (HibernateException e) { //Где отлавливать и обрабатывать исключения?
             e.printStackTrace();
             session.close();
             return null;
@@ -30,9 +31,10 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public boolean addUserDAO(User user) {
-        Transaction t = session.beginTransaction();
+        Transaction t = session.beginTransaction(); // Нужны ли здесь транзакции?
         try {
-            long num = (long) session.save(user);
+            long num = (long) session.save(user);//Есть ли метод, который предварительно проверяет наличие в базе и
+            // принимает решение, записывать или нет?
             t.commit();
             session.close();
             System.out.println(num);
