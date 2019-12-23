@@ -4,17 +4,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Register user</title>
+    <title>Login page</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <link href="${pageContext.request.contextPath}/styles/formStyle.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div class="form-style-6">
-    <h1>Register new user:<br/></h1>
-    <form action="${pageContext.request.contextPath}/registration" method="POST">
+    <h1>Login<br/></h1>
+    <form action="${pageContext.request.contextPath}/" method="POST">
         <input type="text" name="name" placeholder="Name" />
         <input type="password" name="password" placeholder="Password" />
-        <input type="submit" value="Register" />
+        <input type="submit" value="Login" />
     </form>
 </div>
 </body>
