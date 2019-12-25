@@ -1,19 +1,20 @@
 package DAO;
 
 import model.User;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.*;
+import org.hibernate.exception.ConstraintViolationException;
 import util.DBHelper;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserHibernateDAO implements UserDAO {
 
-    private Session session; //Где открывать сессии? В конструкторе или в методах?
+    private Session session;
 
     public UserHibernateDAO() {
-        this.session = DBHelper.getSessionFactory().openSession();
+        this.session = DBHelper.getInstance().getSessionFactory().openSession();
     }
 
     @Override
@@ -22,25 +23,23 @@ public class UserHibernateDAO implements UserDAO {
             List<User> userList = (List<User>) session.createQuery("FROM User").list();
             session.close();
             return userList;
-        } catch (HibernateException e) { //Где отлавливать и обрабатывать исключения?
+        } catch (HibernateException e) {
             e.printStackTrace();
             session.close();
-            return null;
+            return new ArrayList<>();
         }
     }
 
     @Override
     public boolean addUserDAO(User user) {
-        Transaction t = session.beginTransaction(); // Нужны ли здесь транзакции?
+        Transaction trx = session.beginTransaction();
         try {
-            long num = (long) session.save(user);//Есть ли метод, который предварительно проверяет наличие в базе и
-            // принимает решение, записывать или нет?
-            t.commit();
+            long num = (long) session.save(user);
+            trx.commit();
             session.close();
-            System.out.println(num);
             return num > 0;
         } catch (HibernateException e) {
-            t.rollback();
+            trx.rollback();
             session.close();
             return false;
         }
@@ -48,14 +47,14 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public boolean deleteUserDAO(User user) {
-        Transaction t = session.beginTransaction();
+        Transaction trx = session.beginTransaction();
         try {
             session.delete(user);
-            t.commit();
+            trx.commit();
             session.close();
             return true;
         } catch (HibernateException e) {
-            t.rollback();
+            trx.rollback();
             session.close();
             return false;
         }
@@ -63,16 +62,32 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public boolean updateUserDAO(User user) {
-        Transaction t = session.beginTransaction();
+        Transaction trx = session.beginTransaction();
         try {
             session.update(user);
-            t.commit();
+            trx.commit();
             session.close();
             return true;
         } catch (HibernateException e) {
-            t.rollback();
+            trx.rollback();
             session.close();
             return false;
+        }
+    }
+
+    @Override
+    public Optional<User> getUserIfExistsDAO(User user) {
+        try {
+            Query query = session.createQuery("FROM User where name=:name and password=:password");
+            query.setParameter("name", user.getName());
+            query.setParameter("password", user.getPassword());
+            User userFromDB = (User) query.uniqueResult();
+            session.close();
+            return Optional.ofNullable(userFromDB);
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            session.close();
+            return Optional.empty();
         }
     }
 }

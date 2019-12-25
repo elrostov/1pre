@@ -10,11 +10,17 @@
 </head>
 <body>
 <div class="form-style-6">
-    <h1>Update user: <c:out value="${userName}"/><br/></h1>
-    <form action="${pageContext.request.contextPath}/update" method="POST">
+    <h1>Update user: <strong><c:out value="${userName}"/></strong><br/></h1>
+    <form action="${pageContext.request.contextPath}/admin/update" method="POST">
         <input type="hidden" value="${userId}" name="id">
         <input type="text" name="name" value="${userName}"/>
         <input type="text" name="password" value="${userPassword}"/>
+        <label>
+            <select name="role">
+                <option value="user">user</option>
+                <option value="admin">admin</option>
+            </select>
+        </label>
         <input type="submit" value="Update" name="updatePage">
     </form>
 </div>

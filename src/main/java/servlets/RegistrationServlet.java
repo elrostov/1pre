@@ -9,14 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
-@WebServlet("/registration")
+@WebServlet("/admin/registration")
 public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("WEB-INF/registration.jsp").forward(req, resp);
+        req.getRequestDispatcher("/admin/registration.jsp").forward(req, resp);
     }
 
     @Override
@@ -25,14 +24,15 @@ public class RegistrationServlet extends HttpServlet {
                 (req.getParameter("name").getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
         String password = new String //Для поддержки кириллицы
                 (req.getParameter("password").getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
-        if (name.isEmpty() || password.isEmpty()) {
+        String role = new String //Для поддержки кириллицы
+                (req.getParameter("role").getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+
+        if (name.isEmpty() || password.isEmpty() || role.isEmpty()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().println("Wrong values!");
-        }
-        if (!UserServiceImpl.getInstance().addUser(new User(name, password))) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } else {
-            resp.sendRedirect("/");
+            UserServiceImpl.getInstance().addUser(new User(name, password, role));
+            resp.sendRedirect("/admin");
         }
     }
 }

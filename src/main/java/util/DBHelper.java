@@ -15,7 +15,7 @@ import java.sql.SQLException;
 public class DBHelper {
 
     private static DBHelper dbHelper;
-
+    private static Connection connection;
     private static SessionFactory sessionFactory;
 
     public static DBHelper getInstance() {
@@ -26,6 +26,20 @@ public class DBHelper {
     }
 
     public Connection getConnection() {
+        if (connection == null) {
+            connection = createConnection();
+        }
+        return connection;
+    }
+
+    public SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            sessionFactory = createSessionFactory();
+        }
+        return sessionFactory;
+    }
+
+    private Connection createConnection() {
         try {
             DriverManager.registerDriver((Driver) Class.forName("com.mysql.cj.jdbc.Driver").newInstance());
             StringBuilder url = new StringBuilder();
@@ -36,7 +50,6 @@ public class DBHelper {
                     .append("user=root&")
                     .append("password=7727&")
                     .append("serverTimezone=UTC");
-            System.out.println("Connected to DB/ URL: " + url + "\n");
             return DriverManager.getConnection(url.toString());
         } catch (SQLException | InstantiationException |
                 IllegalAccessException | ClassNotFoundException e) {
@@ -59,14 +72,7 @@ public class DBHelper {
         return configuration;
     }
 
-    public static SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            sessionFactory = createSessionFactory();
-        }
-        return sessionFactory;
-    }
-
-    private static SessionFactory createSessionFactory() {
+    private SessionFactory createSessionFactory() {
         Configuration configuration = DBHelper.getInstance().getConfiguration();
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
         builder.applySettings(configuration.getProperties());

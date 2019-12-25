@@ -9,7 +9,7 @@
     <link href="${pageContext.request.contextPath}/styles/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-<form action="${pageContext.request.contextPath}/registration" method="GET">
+<form action="${pageContext.request.contextPath}/admin/registration" method="GET">
     <input type="submit" value="Register user">
 </form>
 <table>
@@ -17,6 +17,7 @@
         <th>Id</th>
         <th>Name</th>
         <th>Password</th>
+        <th>Role</th>
         <th>Update user</th>
         <th>Delete user</th>
     </tr>
@@ -25,8 +26,9 @@
             <td>${user.getId()}</td>
             <td>${user.getName()}</td>
             <td>${user.getPassword()}</td>
+            <td>${user.getRole()}</td>
             <td>
-                <form action="${pageContext.request.contextPath}/update" method="POST">
+                <form action="${pageContext.request.contextPath}/admin/update" method="POST">
                     <input type="hidden" value="${user.getId()}" name="id"/>
                     <input type="hidden" value="${user.getName()}" name="name"/>
                     <input type="hidden" value="${user.getPassword()}" name="password"/>
@@ -35,7 +37,7 @@
                 </form>
             </td>
             <td>
-                <form action="${pageContext.request.contextPath}/delete" method="POST">
+                <form action="${pageContext.request.contextPath}/admin/delete" method="POST">
                     <input type="hidden" value="${user.getId()}" name="id"/>
                     <input type="submit" value="Delete">
                 </form>

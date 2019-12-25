@@ -5,40 +5,44 @@ import util.DBHelper;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserJdbcDAO implements UserDAO {
 
-    public UserJdbcDAO() {}
+    private Connection connection;
+
+    public UserJdbcDAO() {
+        this.connection = DBHelper.getInstance().getConnection();
+    }
 
     @Override
-    public List<User> getAllUsersDAO() { //Где открывать Connection? В конструкторе класса или в каждом методе?
+    public List<User> getAllUsersDAO () { //Где открывать Connection? В конструкторе класса или в каждом методе?
         try (PreparedStatement preparedStatement = //Закроется ли автоматически в таком случае и connection и
-                     // preparedStatement, или только preparedStatement?
-                     DBHelper.getInstance().getConnection().prepareStatement("select * from pre1.users")) {
+                     //preparedStatement, или только preparedStatement? - Нет
+                     connection.prepareStatement("select * from pre1.users")) {
             List<User> userList = new ArrayList<>();
-            int r = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
             ResultSet rs = preparedStatement.getResultSet(); //A ResultSet object is automatically closed when the
-            // Statement object that generated it is closed, re-executed, or used to retrieve the next result
-            // from a sequence of multiple results.
+            //Statement object that generated it is closed, re-executed, or used to retrieve the next result
+            //from a sequence of multiple results. - Да
             while(rs.next()) {
                 userList.add(new User(
                         rs.getLong(1),
                         rs.getString(2),
-                        rs.getString(3)));
+                        rs.getString(3),
+                        rs.getString(4)));
             }
             return userList;
-        } catch (SQLException e) { // Где выбрасывать и обрабатывать исключения?
+        } catch (SQLException e) { //Где выбрасывать и обрабатывать исключения? SQL - обрабатывать здесь
             e.printStackTrace();
-            return null; //Правильно ли возвращать null?
+            return new ArrayList<>();//Правильно ли возвращать null? - Лучше пустой лист или Optional.
         }
     }
 
     @Override
     public boolean addUserDAO (User user) {
-        try (Connection con = DBHelper.getInstance().getConnection();
-             PreparedStatement preparedStatement = //Нужно ли тут указывать PreparedStatement для автоматического
-                     // закрытия, или оставить только Connection?
-                        con.prepareStatement("insert into users (name, password) values(?,?)")) {
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement("insert into users (name, password) values(?,?)")) {
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getPassword());
             int r = preparedStatement.executeUpdate();
@@ -51,9 +55,8 @@ public class UserJdbcDAO implements UserDAO {
 
     @Override
     public boolean deleteUserDAO(User user) {
-        try (Connection con = DBHelper.getInstance().getConnection();
-             PreparedStatement preparedStatement =
-                     con.prepareStatement("delete from users where id=?")) {
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement("delete from users where id=?")) {
             preparedStatement.setLong(1, user.getId());
             int r = preparedStatement.executeUpdate();
             return r > 0;
@@ -65,9 +68,8 @@ public class UserJdbcDAO implements UserDAO {
 
     @Override
     public boolean updateUserDAO(User user) {
-        try (Connection con = DBHelper.getInstance().getConnection();
-             PreparedStatement preparedStatement =
-                     con.prepareStatement("update users set name = ?, password = ? where id=?")) {
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement("update users set name = ?, password = ? where id=?")) {
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setLong(3, user.getId());
@@ -76,6 +78,28 @@ public class UserJdbcDAO implements UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    @Override
+    public Optional<User> getUserIfExistsDAO(User user) {
+        try (PreparedStatement preparedStatement =
+                     connection.prepareStatement("SELECT * FROM users WHERE name = ? and password = ?")) {
+            preparedStatement.setString(1, user.getName());
+            preparedStatement.setString(2, user.getPassword());
+            ResultSet rs = preparedStatement.executeQuery();
+            User userFromDB = null;
+            while(rs.next()) {
+                userFromDB = new User(
+                        rs.getLong(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4));
+            }
+            return Optional.ofNullable(userFromDB);
+            } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
         }
     }
 }

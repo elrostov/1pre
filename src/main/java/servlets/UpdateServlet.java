@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/update")
+@WebServlet("/admin/update")
 public class UpdateServlet extends HttpServlet {
 
     @Override
@@ -19,16 +19,18 @@ public class UpdateServlet extends HttpServlet {
         Long id = Long.parseLong(req.getParameter("id"));
         String name = req.getParameter("name");
         String password = req.getParameter("password");
+        String role = req.getParameter("role");
         if ("yes".equals(req.getParameter("updatePage"))) {
             req.setAttribute("userId", id);
             req.setAttribute("userName", name);
             req.setAttribute("userPassword", password);
-            req.getRequestDispatcher("WEB-INF/update.jsp").forward(req, resp);
+            req.setAttribute("userRole", role);
+            req.getRequestDispatcher("/admin/update.jsp").forward(req, resp);
         }
-        if (!UserServiceImpl.getInstance().updateUser(new User(id, name, password))) {
+        if (!UserServiceImpl.getInstance().updateUser(new User(id, name, password, role))) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } else {
-            resp.sendRedirect("/");
+            resp.sendRedirect("/admin");
         }
     }
 }
