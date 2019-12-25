@@ -21,7 +21,5 @@ public class AdminServlet extends HttpServlet {
         }
         req.setAttribute("users", users);
         req.getRequestDispatcher("/admin/admin.jsp").forward(req, resp);
-        resp.setStatus(HttpServletResponse.SC_OK);
     }
-
 }

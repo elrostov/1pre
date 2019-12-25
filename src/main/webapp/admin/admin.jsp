@@ -32,6 +32,7 @@
                     <input type="hidden" value="${user.getId()}" name="id"/>
                     <input type="hidden" value="${user.getName()}" name="name"/>
                     <input type="hidden" value="${user.getPassword()}" name="password"/>
+                    <input type="hidden" value="${user.getRole()}" name="role"/>
                     <input type="hidden" value="yes" name="updatePage"/>
                     <input type="submit" value="Update">
                 </form>

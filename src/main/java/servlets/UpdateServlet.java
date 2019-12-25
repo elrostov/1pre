@@ -26,8 +26,7 @@ public class UpdateServlet extends HttpServlet {
             req.setAttribute("userPassword", password);
             req.setAttribute("userRole", role);
             req.getRequestDispatcher("/admin/update.jsp").forward(req, resp);
-        }
-        if (!UserServiceImpl.getInstance().updateUser(new User(id, name, password, role))) {
+        } else if (!UserServiceImpl.getInstance().updateUser(new User(id, name, password, role))) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } else {
             resp.sendRedirect("/admin");
